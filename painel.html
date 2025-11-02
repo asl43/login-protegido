@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel Protegido</title>
+<script src="auth.js"></script>
+<style>
+  body{font-family:Arial;background-color:#e9f4ff;text-align:center;margin-top:100px;}
+  h1{color:#007bff;}
+  button{margin-top:20px;padding:10px 20px;background:#ff4757;color:white;border:none;border-radius:8px;cursor:pointer;}
+  button:hover{background:#e84118;}
+</style>
+</head>
+<body>
+<h1>Bem-vindo ao Painel Protegido 🔒</h1>
+<p>Somente usuários cadastrados podem acessar esta página.</p>
+<button onclick="sair()">Sair</button>
+<script>
+function sair(){localStorage.removeItem('usuario');window.location.href='login.html';}
+</script>
+</body>
+</html>

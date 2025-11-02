@@ -1,0 +1,1 @@
+(function(){const user=localStorage.getItem('usuario');if(!user){alert("Acesso negado! Faça login para continuar.");window.location.href="login.html";}})();
