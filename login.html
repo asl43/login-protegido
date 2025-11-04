@@ -48,32 +48,38 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbyEOtaVGmm0bXuvMlN3ljj3Y_Yg90QeKroNCI47tw1V0pWHkabxRhWc4GOImFiNvpJz/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbx-25ZA-LbNahQ1U3W3CL3xzEFkzIYzSxSj-5Uas9PnDwuHPPAgLqP6gW9NYoWmqBk/exec";
 
-    async function fazerLogin() {
-      const email = document.getElementById('email').value.trim();
-      const senha = document.getElementById('senha').value.trim();
-      const msg = document.getElementById('mensagem');
-      msg.textContent = "Verificando…";
+function fazerLogin() {
+  const email = document.getElementById('email').value.trim();
+  const senha = document.getElementById('senha').value.trim();
+  const msg = document.getElementById('mensagem');
+  msg.textContent = "Verificando…";
 
-      try {
-        const resp = await fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ email, senha }),
-          headers: { "Content-Type": "application/json" }
-        });
-        const data = await resp.json();
-
-        if (data.sucesso) {
-          localStorage.setItem('usuario', JSON.stringify(data));
-          window.location.href = "painel.html";
-        } else {
-          msg.textContent = data.mensagem;
-        }
-      } catch (e) {
-        msg.textContent = "Erro de conexão. Verifique se o Apps Script está publicado para 'Qualquer pessoa, mesmo anônima'.";
-      }
+  // JSONP - sem problemas de CORS
+  const callbackName = 'callback_' + Date.now();
+  
+  window[callbackName] = function(data) {
+    if (data.sucesso) {
+      localStorage.setItem('usuario', JSON.stringify(data));
+      window.location.href = "painel.html";
+    } else {
+      msg.textContent = data.mensagem;
     }
+    // Limpa
+    delete window[callbackName];
+    document.body.removeChild(script);
+  };
+
+  const script = document.createElement('script');
+  script.src = API_URL + '?callback=' + callbackName + '&email=' + encodeURIComponent(email) + '&senha=' + encodeURIComponent(senha);
+  script.onerror = function() {
+    msg.textContent = "Erro de conexão com o servidor";
+    delete window[callbackName];
+  };
+  
+  document.body.appendChild(script);
+}
   </script>
 </body>
 </html>
